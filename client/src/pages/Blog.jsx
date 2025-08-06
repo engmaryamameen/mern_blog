@@ -1,59 +1,39 @@
-import { Button, Select, TextInput } from 'flowbite-react';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import PostCard from '../components/PostCard';
-import { FaSearch, FaFilter, FaSort, FaFolder, FaSpinner, FaTimes, FaEye } from 'react-icons/fa';
+import { FaSearch, FaFilter, FaSort, FaFolder, FaSpinner, FaTimes, FaEye, FaCalendar, FaClock, FaUser } from 'react-icons/fa';
 
-export default function Search() {
+export default function Blog() {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showMore, setShowMore] = useState(false);
   const [sidebarData, setSidebarData] = useState({
     searchTerm: '',
     sort: 'desc',
     category: 'uncategorized',
   });
 
-  console.log(sidebarData);
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [showMore, setShowMore] = useState(false);
-
-  const location = useLocation();
-
-  const navigate = useNavigate();
-
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const searchTermFromUrl = urlParams.get('searchTerm') || '';
-    const sortFromUrl = urlParams.get('sort') || 'desc';
-    const categoryFromUrl = urlParams.get('category') || 'uncategorized';
-    
-    // Update sidebar data with URL parameters
-    setSidebarData({
-      searchTerm: searchTermFromUrl,
-      sort: sortFromUrl,
-      category: categoryFromUrl,
-    });
-
     const fetchPosts = async () => {
       setLoading(true);
-      const searchQuery = urlParams.toString();
-      const res = await fetch(`/api/post/getposts?${searchQuery}`);
-      if (!res.ok) {
-        setLoading(false);
-        return;
-      }
-      if (res.ok) {
-        const data = await res.json();
-        setPosts(data.posts);
-        setLoading(false);
-        if (data.posts.length === 9) {
-          setShowMore(true);
-        } else {
-          setShowMore(false);
+      try {
+        const res = await fetch('/api/post/getposts');
+        if (res.ok) {
+          const data = await res.json();
+          setPosts(data.posts);
+          if (data.posts.length === 9) {
+            setShowMore(true);
+          } else {
+            setShowMore(false);
+          }
         }
+      } catch (error) {
+        console.log(error);
       }
+      setLoading(false);
     };
     fetchPosts();
-  }, [location.search]);
+  }, []);
 
   const handleChange = (e) => {
     if (e.target.id === 'searchTerm') {
@@ -71,21 +51,18 @@ export default function Search() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const urlParams = new URLSearchParams(location.search);
+    const urlParams = new URLSearchParams();
     urlParams.set('searchTerm', sidebarData.searchTerm);
     urlParams.set('sort', sidebarData.sort);
     urlParams.set('category', sidebarData.category);
     const searchQuery = urlParams.toString();
-    navigate(`/search?${searchQuery}`);
+    window.location.href = `/search?${searchQuery}`;
   };
 
   const handleShowMore = async () => {
     const numberOfPosts = posts.length;
     const startIndex = numberOfPosts;
-    const urlParams = new URLSearchParams(location.search);
-    urlParams.set('startIndex', startIndex);
-    const searchQuery = urlParams.toString();
-    const res = await fetch(`/api/post/getposts?${searchQuery}`);
+    const res = await fetch(`/api/post/getposts?startIndex=${startIndex}`);
     if (!res.ok) {
       return;
     }
@@ -109,23 +86,23 @@ export default function Search() {
             <div className='px-8 py-8 text-white'>
               <div className='flex items-center space-x-4 mb-4'>
                 <div className='w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center'>
-                  <FaSearch className='w-8 h-8 text-white' />
+                  <FaEye className='w-8 h-8 text-white' />
                 </div>
                 <div>
-                  <h1 className='text-3xl font-bold'>Search & Discover</h1>
-                  <p className='text-gray-300 text-lg'>Find the perfect content that matches your interests</p>
+                  <h1 className='text-3xl font-bold'>All Blog Posts</h1>
+                  <p className='text-gray-300 text-lg'>Discover amazing content from our community</p>
                 </div>
               </div>
               
-              {/* Search Stats */}
+              {/* Blog Stats */}
               <div className='flex items-center space-x-6 text-sm'>
                 <div className='flex items-center space-x-2'>
                   <FaEye className='w-4 h-4 text-blue-400' />
-                  <span className='text-gray-300'>{posts.length} posts found</span>
+                  <span className='text-gray-300'>{posts.length} posts available</span>
                 </div>
                 <div className='flex items-center space-x-2'>
                   <FaFilter className='w-4 h-4 text-purple-400' />
-                  <span className='text-gray-300'>Advanced filters available</span>
+                  <span className='text-gray-300'>Use search to find specific content</span>
                 </div>
               </div>
             </div>
@@ -137,8 +114,8 @@ export default function Search() {
               <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden sticky top-6'>
                 <div className='bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700'>
                   <h3 className='text-lg font-semibold text-gray-900 dark:text-white flex items-center space-x-2'>
-                    <FaFilter className='w-4 h-4 text-blue-600 dark:text-blue-400' />
-                    <span>Search Filters</span>
+                    <FaSearch className='w-4 h-4 text-blue-600 dark:text-blue-400' />
+                    <span>Find Posts</span>
                   </h3>
                 </div>
                 
@@ -208,56 +185,29 @@ export default function Search() {
                     </select>
                   </div>
 
-                  {/* Apply Filters Button */}
+                  {/* Search Button */}
                   <button
                     type='submit'
                     className='w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium py-3 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2'
                   >
-                    <FaFilter className='w-4 h-4' />
-                    <span>Apply Filters</span>
+                    <FaSearch className='w-4 h-4' />
+                    <span>Search Posts</span>
                   </button>
-
-                  {/* Clear Filters Button - Show when filters are active */}
-                  {(sidebarData.searchTerm || sidebarData.category !== 'uncategorized' || sidebarData.sort !== 'desc') && (
-                    <button
-                      type='button'
-                      onClick={() => {
-                        setSidebarData({
-                          searchTerm: '',
-                          sort: 'desc',
-                          category: 'uncategorized',
-                        });
-                        navigate('/search');
-                      }}
-                      className='w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium py-3 px-6 rounded-xl transition-all duration-200 flex items-center justify-center space-x-2'
-                    >
-                      <FaTimes className='w-4 h-4' />
-                      <span>Clear Filters</span>
-                    </button>
-                  )}
                 </form>
               </div>
             </div>
 
-            {/* Main Content - Search Results */}
+            {/* Main Content - Blog Posts */}
             <div className='flex-1'>
               <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden'>
                 <div className='bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 px-6 py-4 border-b border-gray-200 dark:border-gray-700'>
                   <div className='flex items-center justify-between'>
-                    <div className='flex items-center space-x-4'>
-                      <h2 className='text-xl font-semibold text-gray-900 dark:text-white flex items-center space-x-2'>
-                        <FaSearch className='w-4 h-4 text-gray-600 dark:text-gray-400' />
-                        <span>Search Results</span>
-                      </h2>
-                      {sidebarData.category && sidebarData.category !== 'uncategorized' && (
-                        <div className='bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 text-sm font-medium px-3 py-1 rounded-full flex items-center space-x-2'>
-                          <FaFolder className='w-3 h-3' />
-                          <span className='capitalize'>{sidebarData.category}</span>
-                        </div>
-                      )}
-                    </div>
+                    <h2 className='text-xl font-semibold text-gray-900 dark:text-white flex items-center space-x-2'>
+                      <FaEye className='w-4 h-4 text-gray-600 dark:text-gray-400' />
+                      <span>All Posts</span>
+                    </h2>
                     <div className='bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm font-medium px-3 py-1 rounded-full'>
-                      {posts.length} {posts.length === 1 ? 'result' : 'results'}
+                      {posts.length} {posts.length === 1 ? 'post' : 'posts'}
                     </div>
                   </div>
                 </div>
@@ -268,12 +218,12 @@ export default function Search() {
                     <div className='flex items-center justify-center py-12'>
                       <div className='flex items-center space-x-3'>
                         <FaSpinner className='w-6 h-6 text-blue-600 animate-spin' />
-                        <span className='text-gray-600 dark:text-gray-400 text-lg'>Searching for posts...</span>
+                        <span className='text-gray-600 dark:text-gray-400 text-lg'>Loading posts...</span>
                       </div>
                     </div>
                   )}
 
-                  {/* No Results State */}
+                  {/* No Posts State */}
                   {!loading && posts.length === 0 && (
                     <div className='text-center py-12'>
                       <div className='w-24 h-24 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-6'>
@@ -283,25 +233,17 @@ export default function Search() {
                         No posts found
                       </h3>
                       <p className='text-gray-600 dark:text-gray-400 max-w-md mx-auto mb-6'>
-                        Try adjusting your search terms or filters to find what you're looking for.
+                        Be the first to create amazing content for our community!
                       </p>
-                      <button
-                        onClick={() => {
-                          setSidebarData({
-                            searchTerm: '',
-                            sort: 'desc',
-                            category: 'uncategorized',
-                          });
-                          navigate('/search');
-                        }}
-                        className='bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl'
-                      >
-                        Clear Filters
-                      </button>
+                      <Link to='/create-post'>
+                        <button className='bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl'>
+                          Create Your First Post
+                        </button>
+                      </Link>
                     </div>
                   )}
 
-                  {/* Search Results Grid */}
+                  {/* Blog Posts Grid */}
                   {!loading && posts.length > 0 && (
                     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
                       {posts.map((post) => (
@@ -330,4 +272,4 @@ export default function Search() {
       </div>
     </div>
   );
-}
+} 

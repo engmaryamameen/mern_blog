@@ -1,71 +1,194 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-body {
-  height: 100vh;
+@layer base {
+  html {
+    font-family: 'Inter', sans-serif;
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100;
+    height: 100vh;
+  }
 }
 
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium px-6 py-3 rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl;
+  }
+  
+  .btn-secondary {
+    @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 font-medium px-6 py-3 rounded-lg transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-700 shadow-sm hover:shadow-md;
+  }
+  
+  .card {
+    @apply bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 dark:border-gray-700;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-200 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent;
+  }
+  
+  .glass-effect {
+    @apply backdrop-blur-md bg-white/80 dark:bg-gray-900/80 border border-white/20 dark:border-gray-700/20;
+  }
+}
+
+/* Rich text editor styles */
 .ql-editor {
+  @apply text-gray-700 dark:text-gray-300 text-base leading-relaxed;
   font-size: 1.05rem;
 }
 
+/* Post content styles */
+.post-content {
+  @apply max-w-none;
+}
+
 .post-content p {
-  margin-bottom: 0.5rem;
+  @apply mb-4 text-gray-700 dark:text-gray-300 leading-relaxed;
 }
 
 .post-content h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  font-family: sans-serif;
-  margin: 1.5rem 0;
+  @apply text-3xl font-bold text-gray-900 dark:text-white mb-6 mt-8;
 }
+
 .post-content h2 {
-  font-size: 1.4rem;
-  font-family: sans-serif;
-  margin: 1.5rem 0;
+  @apply text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4 mt-6;
+}
+
+.post-content h3 {
+  @apply text-xl font-semibold text-gray-800 dark:text-gray-100 mb-3 mt-5;
+}
+
+.post-content ul {
+  @apply list-disc list-inside mb-4;
 }
 
 .post-content ul li {
-  margin: 1.15rem 0;
-  margin-left: 1.3rem;
-  list-style-type: circle;
+  @apply mb-2 text-gray-700 dark:text-gray-300;
+}
+
+.post-content ol {
+  @apply list-decimal list-inside mb-4;
 }
 
 .post-content ol li {
-  margin: 1.15rem 0;
-  margin-left: 1.3rem;
-  list-style-type: decimal;
+  @apply mb-2 text-gray-700 dark:text-gray-300;
 }
 
 .post-content a {
-  /* light blue */
-  color: rgb(73, 149, 199);
-  text-decoration: none;
+  @apply text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline decoration-2 underline-offset-2 transition-colors duration-200;
 }
 
-.post-content a:hover {
-  text-decoration: underline;
+.post-content blockquote {
+  @apply border-l-4 border-blue-500 pl-4 italic text-gray-600 dark:text-gray-400 my-4;
 }
 
 .post-content pre {
-  background-color: rgb(30, 41, 59);
-  border: 1px solid rgb(61, 69, 83);
-  color: rgb(232, 231, 231);
-  white-space: pre-wrap;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  margin-bottom: 0.5rem;
+  @apply bg-gray-900 dark:bg-gray-800 border border-gray-700 text-gray-100 p-4 rounded-lg overflow-x-auto my-4;
 }
 
 .post-content code {
-  background-color: rgb(236, 236, 236);
-  padding: 0.25rem;
-  border-radius: 0.25rem;
-  font-size: 0.9rem;
+  @apply bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-2 py-1 rounded text-sm font-mono;
 }
 
-.dark .post-content code {
-  background-color: rgb(30, 41, 59);
-  border: 1px solid rgb(61, 69, 83);
+.post-content img {
+  @apply rounded-lg shadow-md my-4;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
+}
+
+/* Animation classes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out;
+}
+
+.animate-slide-in {
+  animation: slideIn 0.6s ease-out;
+}
+
+/* Loading spinner */
+.spinner {
+  @apply w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin;
+}
+
+/* Toast notifications */
+.toast {
+  @apply fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm;
+}
+
+.toast-success {
+  @apply bg-green-500 text-white;
+}
+
+.toast-error {
+  @apply bg-red-500 text-white;
+}
+
+.toast-warning {
+  @apply bg-yellow-500 text-white;
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  .container {
+    @apply px-4;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    @apply px-6;
+  }
+}
+
+@media (min-width: 1025px) {
+  .container {
+    @apply px-8;
+  }
 }

@@ -6,6 +6,8 @@ import {
   HiOutlineUserGroup,
   HiAnnotation,
   HiChartPie,
+  HiPlus,
+  HiPencil,
 } from 'react-icons/hi';
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
@@ -41,7 +43,7 @@ export default function DashSidebar() {
     }
   };
   return (
-    <Sidebar className='w-full md:w-56'>
+    <Sidebar className='w-full border-r border-gray-200 dark:border-gray-700'>
       <Sidebar.Items>
         <Sidebar.ItemGroup className='flex flex-col gap-1'>
           {currentUser && currentUser.isAdmin && (
@@ -74,6 +76,17 @@ export default function DashSidebar() {
                 as='div'
               >
                 Posts
+              </Sidebar.Item>
+            </Link>
+          )}
+          {currentUser.isAdmin && (
+            <Link to='/dashboard?tab=create-post'>
+              <Sidebar.Item
+                active={tab === 'create-post'}
+                icon={HiPlus}
+                as='div'
+              >
+                Create Post
               </Sidebar.Item>
             </Link>
           )}

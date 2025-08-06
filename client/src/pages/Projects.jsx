@@ -1,4 +1,4 @@
-import CallToAction from '../components/CallToAction';
+
 
 export default function Projects() {
   return (
@@ -36,7 +36,7 @@ export default function Projects() {
           </ul>
         </section>
       </div>
-      <CallToAction />
+      
     </div>
   );
 }

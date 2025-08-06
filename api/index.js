@@ -5,8 +5,6 @@ import userRoutes from './routes/user.route.js';
 import authRoutes from './routes/auth.route.js';
 import postRoutes from './routes/post.route.js';
 import commentRoutes from './routes/comment.route.js';
-import analyticsRoutes from './routes/analytics.route.js';
-import categoryRoutes from './routes/category.route.js';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import cors from 'cors';
@@ -14,8 +12,18 @@ import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import morgan from 'morgan';
+import { fileURLToPath } from 'url';
 
-dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.join(__dirname, '.env') });
+
+// Debug environment variables
+console.log('Environment variables loaded:');
+console.log('MONGODB_URI:', process.env.MONGODB_URI ? 'Set' : 'Not set');
+console.log('JWT_SECRET:', process.env.JWT_SECRET ? 'Set' : 'Not set');
+console.log('NODE_ENV:', process.env.NODE_ENV || 'development');
 
 // Enhanced MongoDB connection with better error handling
 mongoose
@@ -28,7 +36,7 @@ mongoose
     process.exit(1);
   });
 
-const __dirname = path.resolve();
+
 const app = express();
 
 // Security middleware
@@ -76,7 +84,7 @@ app.use(cookieParser());
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
-    message: 'Tech Blog Pro API is running',
+    message: 'Tech Blog API is running',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     environment: process.env.NODE_ENV || 'development'
@@ -88,15 +96,13 @@ app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/comment', commentRoutes);
-app.use('/api/analytics', analyticsRoutes);
-app.use('/api/category', categoryRoutes);
 
 // Serve static files
-app.use(express.static(path.join(__dirname, '/client/dist')));
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // Catch-all handler for SPA
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
 // Enhanced error handling middleware
@@ -130,7 +136,7 @@ app.use('*', (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`🚀 Tech Blog Pro server running on port ${PORT}!`);
+  console.log(`🚀 Tech Blog server running on port ${PORT}!`);
   console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🔗 Health check: http://localhost:${PORT}/api/health`);
 });

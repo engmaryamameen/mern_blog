@@ -2,6 +2,10 @@ import User from '../models/user.model.js';
 import bcryptjs from 'bcryptjs';
 import { errorHandler } from '../utils/error.js';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+
+dotenv.config({path: '../.env'});
 
 export const signup = async (req, res, next) => {
   const { username, email, password } = req.body;
@@ -49,6 +53,14 @@ export const signin = async (req, res, next) => {
     if (!validPassword) {
       return next(errorHandler(400, 'Invalid password'));
     }
+    console.log('JWT_SECRET:', process.env.JWT_SECRET);
+    console.log('JWT_SECRET type:', typeof process.env.JWT_SECRET);
+    console.log('JWT_SECRET length:', process.env.JWT_SECRET ? process.env.JWT_SECRET.length : 'undefined');
+    
+    if (!process.env.JWT_SECRET) {
+      return next(errorHandler(500, 'JWT_SECRET is not configured'));
+    }
+    
     const token = jwt.sign(
       { id: validUser._id, isAdmin: validUser.isAdmin },
       process.env.JWT_SECRET
@@ -72,6 +84,10 @@ export const google = async (req, res, next) => {
   try {
     const user = await User.findOne({ email });
     if (user) {
+      if (!process.env.JWT_SECRET) {
+        return next(errorHandler(500, 'JWT_SECRET is not configured'));
+      }
+      
       const token = jwt.sign(
         { id: user._id, isAdmin: user.isAdmin },
         process.env.JWT_SECRET
@@ -97,6 +113,11 @@ export const google = async (req, res, next) => {
         profilePicture: googlePhotoUrl,
       });
       await newUser.save();
+      
+      if (!process.env.JWT_SECRET) {
+        return next(errorHandler(500, 'JWT_SECRET is not configured'));
+      }
+      
       const token = jwt.sign(
         { id: newUser._id, isAdmin: newUser.isAdmin },
         process.env.JWT_SECRET

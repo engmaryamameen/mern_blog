@@ -12,9 +12,11 @@ import { useState } from 'react';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 import { useNavigate } from 'react-router-dom';
-import { FaUpload, FaEdit, FaSave } from 'react-icons/fa';
+import { FaUpload, FaEdit, FaSave, FaCrown } from 'react-icons/fa';
+import { useSelector } from 'react-redux';
 
-export default function CreatePost() {
+export default function DashCreatePost() {
+  const { currentUser } = useSelector((state) => state.user);
   const [file, setFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
@@ -93,14 +95,16 @@ export default function CreatePost() {
     <div className='min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900'>
       <div className='p-6'>
         <div className='max-w-4xl mx-auto'>
-          <div className='bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden'>
+          <div className='bg-white/90 dark:bg-gray-800 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700 overflow-hidden'>
             {/* Header Section */}
-            <div className='bg-gradient-to-r from-gray-800 via-black to-gray-900 px-8 py-6 text-white'>
+            <div className='bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-gray-800 dark:via-black dark:to-gray-900 px-8 py-6 text-white'>
               <h1 className='text-3xl font-bold'>Create New Post</h1>
-              <p className='text-gray-300 mt-2'>Write and publish your amazing content</p>
+              <p className='text-blue-100 dark:text-gray-300 mt-2'>Write and publish your amazing content</p>
             </div>
             
             <div className='p-8'>
+             
+              
               <form className='space-y-6' onSubmit={handleSubmit}>
                 {/* Title and Category Row */}
                 <div className='grid md:grid-cols-3 gap-6'>
@@ -113,7 +117,7 @@ export default function CreatePost() {
                       placeholder='Enter your post title'
                       required
                       id='title'
-                      className='w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-gray-800 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200 bg-gray-50 dark:bg-gray-700 hover:bg-white dark:hover:bg-gray-600'
+                      className='w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200 bg-gray-50 dark:bg-gray-700 hover:bg-white dark:hover:bg-gray-600'
                       onChange={(e) =>
                         setFormData({ ...formData, title: e.target.value })
                       }
@@ -127,14 +131,16 @@ export default function CreatePost() {
                       onChange={(e) =>
                         setFormData({ ...formData, category: e.target.value })
                       }
-                      className='w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-gray-800 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200 bg-gray-50 dark:bg-gray-700 hover:bg-white dark:hover:bg-gray-600'
+                      className='w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white transition-all duration-200 bg-gray-50 dark:bg-gray-700 hover:bg-white dark:hover:bg-gray-600'
                     >
                       <option value='uncategorized'>Select a category</option>
-                      <option value='javascript'>JavaScript</option>
-                      <option value='reactjs'>React.js</option>
-                      <option value='nextjs'>Next.js</option>
-                      <option value='web-development'>Web Development</option>
-                      <option value='nodejs'>Node.js</option>
+                      <option value='technology'>Technology</option>
+                      <option value='programming'>Programming</option>
+                      <option value='design'>Design</option>
+                      <option value='business'>Business</option>
+                      <option value='lifestyle'>Lifestyle</option>
+                      <option value='tutorial'>Tutorial</option>
+                      <option value='news'>News</option>
                     </select>
                   </div>
                 </div>
@@ -261,4 +267,4 @@ export default function CreatePost() {
       </div>
     </div>
   );
-}
+} 
